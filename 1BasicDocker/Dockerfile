@@ -1,14 +1,6 @@
 # Use a lightweight base image
-FROM alpine:latest
+FROM nginx:latest
 
-ARG wording="Hello, World!"
-# Set the working directory
-WORKDIR /app
+COPY ./hello.html /usr/share/nginx/html/hello.html
 
-# Create a simple hello world script
-RUN echo '#!/bin/sh' > hello.sh && \
-    echo "echo \"$wording\"" >> hello.sh && \
-    chmod +x hello.sh
-
-# Set the default command to run our hello world script
-CMD ["./hello.sh"]
+EXPOSE 80
