@@ -1,0 +1,19 @@
+1. ความสำคัญของ Observability ในระบบ API
+ - Metrics, Logs, Traces
+ - การวัด Latency, Error Rate, Throughput
+
+2. การติดตั้ง Prometheus และ Grafana ด้วย Docker
+ - Docker Compose สำหรับ Prometheus + Grafana
+ - การตั้งค่า Prometheus Scrape Targets
+
+3. การเก็บ Metrics จาก Kong
+ - การเปิดใช้งาน Kong Prometheus Plugin
+ - Metrics ที่สำคัญ: HTTP Status, Latency, Request Count
+
+4. การสร้าง Dashboard ใน Grafana
+ - การเชื่อมต่อ Data Source
+ - การสร้าง Panel สำหรับ API Monitoring
+
+5. การตั้ง Alert
+ -  Alert Rule เช่น Latency > 500ms, Error Rate > 5%
+ - การแจ้งเตือนผ่าน Email, Slack, Webhook

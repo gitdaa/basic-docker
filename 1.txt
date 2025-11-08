@@ -1,0 +1,19 @@
+1. Docker คืออะไร และทำไมถึงสำคัญด้าน Security
+ - แนวคิดของ Containerization
+ - ความแตกต่างระหว่าง VM และ Container
+ - ความปลอดภัยจาก Isolation, Immutable Infrastructure, Reproducibility
+
+2. การใช้งาน Docker เบื้องต้น
+ - Dockerfile, Image, Container, Volume, Network
+ - ตัวอย่างการสร้าง Container สำหรับ Web/API
+
+3. Best Practices ด้านความปลอดภัยของ Docker
+ - ใช้ non-root user
+ - จำกัดสิทธิ์ของ container
+ - การใช้ Secrets แทน ENV
+ - การสแกน Image ด้วย Trivy
+
+4. Portainer: UI สำหรับจัดการ Docker
+ - การติดตั้ง Portainer ด้วย Docker
+ - การจัดการ Container, Stack, Volume ผ่าน Web UI
+ - การตั้งค่า RBAC และการควบคุมสิทธิ์ผู้ใช้

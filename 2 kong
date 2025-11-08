@@ -1,0 +1,22 @@
+1. Kong คืออะไร และทำงานอย่างไร
+ - API Gateway vs Reverse Proxy
+ - Kong Architecture: Service, Route, Plugin
+
+2. การติดตั้ง Kong ด้วย Docker
+ - Docker Compose สำหรับ Kong + Postgres
+ - การเชื่อมต่อกับ Backend API
+
+3. การตั้งค่า Service และ Route
+ - Mapping endpoint → Kong → Backend
+ - การจัดการผ่าน Admin API หรือ Konga
+
+4. การใช้ Plugin เพื่อเพิ่มความปลอดภัย
+ - Rate Limiting
+ - Key Authentication
+ - JWT Authentication
+ - ACL (Access Control List)
+ - CORS และ Header Injection
+
+5. การจัดการเวอร์ชัน API และการควบคุม Traffic
+ - Blue/Green Deployment
+ - Canary Release

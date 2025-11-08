@@ -1,0 +1,7 @@
+services:
+  hello-world:
+    build:
+      context: ../1BasicDocker
+      dockerfile: Dockerfile
+    container_name: hello-world-app
+    #restart: unless-stopped
