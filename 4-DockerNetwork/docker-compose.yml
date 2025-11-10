@@ -1,0 +1,42 @@
+version: "3.8"
+
+services:
+  # Primary network learning app
+  network-app:
+    build: .
+    container_name: network-learning-app
+    environment:
+      - SERVICE_NAME=network-app
+    ports:
+      - "3000:3000"
+    networks:
+      - learning-net
+
+  # Secondary app for network communication testing
+  web-app:
+    build: .
+    container_name: web-learning-app
+    environment:
+      - SERVICE_NAME=web-app
+    ports:
+      - "3001:3000"
+    networks:
+      - learning-net
+
+  # Third app for advanced testing
+  api-app:
+    build: .
+    container_name: api-learning-app
+    environment:
+      - SERVICE_NAME=api-app
+    ports:
+      - "3002:3000"
+    networks:
+      - learning-net
+
+networks:
+  learning-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
