@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  volume-app:
+    build: .
+    container_name: docker-volume-demo
+    ports:
+      - "3000:3000"
+    volumes:
+      # Named volumes - ข้อมูลจะถูกเก็บไว้แม้ container ถูกลบ
+      - app-data:/app/data
+      - app-logs:/app/logs
+
+      # Bind mount - เชื่อม folder จาก host เข้า container
+      - ./host-config:/app/config
+
+      # Anonymous volume - สำหรับ temporary files
+      - /app/tmp
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+
+volumes:
+  # Named volumes จะถูก manage โดย Docker
+  app-data:
+    driver: local
+  app-logs:
+    driver: local

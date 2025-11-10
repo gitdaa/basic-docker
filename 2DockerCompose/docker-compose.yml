@@ -1,9 +1,0 @@
-services:
-  hello-world:
-    build:
-      context: ../1-Docker
-      dockerfile: Dockerfile
-    container_name: hello-world-app
-    ports:
-      - "3000:3000"
-    restart: unless-stopped
