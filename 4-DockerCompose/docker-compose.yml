@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  # Single Node.js application
+  app:
+    build: .
+    container_name: simple-docker-compose-app
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
