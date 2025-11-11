@@ -8,6 +8,8 @@ WORKDIR /app
 
 COPY index.js .
 
+RUN echo 'This Docker image is built using Node.js 18 on Alpine Linux.'
+
 EXPOSE 3000
 
 CMD [ "node", "index.js" ]
