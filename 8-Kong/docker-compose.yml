@@ -1,126 +1,75 @@
-version: '3.8'
-
-networks:
-  kong-net:
-    driver: bridge
+name: kong-gateway
 
 services:
-  # PostgreSQL Database สำหรับ Kong
+
   kong-database:
-    image: postgres:11
+    image: postgres:9.6
     container_name: kong-database
-    restart: unless-stopped
     environment:
-      POSTGRES_USER: kong
-      POSTGRES_PASSWORD: kongpass
-      POSTGRES_DB: kong
+      - POSTGRES_USER=kong
+      - POSTGRES_DB=kong
+      - POSTGRES_PASSWORD=your-password
     volumes:
-      - kong_data:/var/lib/postgresql/data
-    networks:
-      - kong-net
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U kong"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
+      - "db-data-kong-postgres:/var/lib/postgresql/data"
 
-  # PostgreSQL Database สำหรับ Konga (แยกจาก Kong)
-  konga-database:
-    image: postgres:11
-    container_name: konga-database
-    restart: unless-stopped
-    environment:
-      POSTGRES_USER: konga
-      POSTGRES_PASSWORD: kongapass
-      POSTGRES_DB: konga
-    volumes:
-      - konga_data:/var/lib/postgresql/data
-    networks:
-      - kong-net
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U konga"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-
-  # Kong Migration - สำหรับ setup database schema
   kong-migrations:
-    image: kong:3.4
-    container_name: kong-migrations
+    image: kong
+    environment:
+      - KONG_DATABASE=postgres
+      - KONG_PG_HOST=kong-database
+      - KONG_PG_PASSWORD=your-password
+      - KONG_CASSANDRA_CONTACT_POINTS=kong-database
     command: kong migrations bootstrap
-    environment:
-      KONG_DATABASE: postgres
-      KONG_PG_HOST: kong-database
-      KONG_PG_PORT: 5432
-      KONG_PG_USER: kong
-      KONG_PG_PASSWORD: kongpass
-      KONG_PG_DATABASE: kong
-    networks:
-      - kong-net
+    restart: on-failure
     depends_on:
-      kong-database:
-        condition: service_healthy
-    restart: "no"
+      - kong-database
 
-  # Kong API Gateway
   kong:
-    image: kong:3.4
+    image: kong
     container_name: kong
-    restart: unless-stopped
+    restart: on-failure
+    #volumes:
+    #  - "./ssl:/mnt/ssl"
     environment:
-      KONG_DATABASE: postgres
-      KONG_PG_HOST: kong-database
-      KONG_PG_PORT: 5432
-      KONG_PG_USER: kong
-      KONG_PG_PASSWORD: kongpass
-      KONG_PG_DATABASE: kong
-      KONG_PROXY_ACCESS_LOG: /dev/stdout
-      KONG_ADMIN_ACCESS_LOG: /dev/stdout
-      KONG_PROXY_ERROR_LOG: /dev/stderr
-      KONG_ADMIN_ERROR_LOG: /dev/stderr
-      KONG_ADMIN_LISTEN: 0.0.0.0:8001
-      KONG_ADMIN_GUI_URL: http://localhost:8002
+      #- LANG=en_US.UTF-8
+      #- LC_ALL=en_US.UTF-8
+      - KONG_DATABASE=postgres
+      - KONG_PG_HOST=kong-database
+      - KONG_PG_USER=kong
+      - KONG_PG_PASSWORD=your-password
+      - KONG_CASSANDRA_CONTACT_POINTS=kong-database
+      - KONG_PROXY_ACCESS_LOG=/dev/stdout
+      - KONG_ADMIN_ACCESS_LOG=/dev/stdout
+      - KONG_PROXY_ERROR_LOG=/dev/stderr
+      - KONG_ADMIN_ERROR_LOG=/dev/stderr
+      #- KONG_SSL_CERT=/mnt/ssl/ssl.pem
+      #- KONG_SSL_CERT_KEY=/mnt/ssl/ssl.key
+      - KONG_PROXY_LISTEN=0.0.0.0:80, 0.0.0.0:443 ssl
+      - KONG_ADMIN_LISTEN=0.0.0.0:8001, 0.0.0.0:8444 ssl
+    
     ports:
-      - "8000:8000"    # Kong Proxy HTTP
-      - "8443:8443"    # Kong Proxy HTTPS
-      - "8001:8001"    # Kong Admin API HTTP
-      - "8444:8444"    # Kong Admin API HTTPS
-      - "8002:8002"    # Kong Manager (GUI)
-    networks:
-      - kong-net
-    depends_on:
-      kong-database:
-        condition: service_healthy
-      kong-migrations:
-        condition: service_completed_successfully
-    healthcheck:
-      test: ["CMD", "kong", "health"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
+      - 80:80
+      - 8443:8443
+    links:
+      - kong-database:kong-database
+    # depends_on:
+    #   - kong-migrations
 
-  # Konga - Kong Admin GUI
   konga:
-    image: pantsel/konga:latest
-    container_name: konga
-    restart: unless-stopped
-    environment:
-      DB_ADAPTER: postgres
-      DB_URI: postgresql://konga:kongapass@konga-database:5432/konga
-      NODE_ENV: production
-      KONGA_HOOK_TIMEOUT: 120000
+    image: pantsel/konga
+    links:
+      - kong:kong
     ports:
-      - "1337:1337"    # Konga Web Interface
-    networks:
-      - kong-net
-    depends_on:
-      konga-database:
-        condition: service_healthy
-      kong:
-        condition: service_healthy
+      - 1337:1337
+    container_name: konga
+    environment:
+      - NODE_ENV=production
+      - TOKEN_SECRET=2E55D9A3EFB8542DC145C19EA3D5E
 
 volumes:
-  kong_data:
-    driver: local
-  konga_data:
-    driver: local
+  db-data-kong-postgres:
+
+networks:
+  default:
+    name: kong-net
+    external: true

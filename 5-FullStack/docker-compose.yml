@@ -78,6 +78,7 @@ services:
       - "80:80"
     networks:
       - fullstack-net
+
     depends_on:
       - frontend
       - backend
