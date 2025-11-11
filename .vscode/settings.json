@@ -1,0 +1,4 @@
+{
+    "trivy.secretScanning": false,
+    "trivy.useConfigFile": true
+}
