@@ -51,6 +51,8 @@ const server = http.createServer((req, res) => {
                 <p><strong>Platform:</strong> ${os.platform()}</p>
                 <p><strong>Node.js Version:</strong> ${process.version}</p>
                 <p><strong>Current Time:</strong> ${new Date().toLocaleString()}</p>
+                <p><strong>ARG Env:</strong> ${process.env.APP_VERSION}</p>
+                <p><strong>File Version:</strong> 3</p>
             </div>
             
             <p>🎉 Successfully running <code>node index.js</code> in Docker!</p>

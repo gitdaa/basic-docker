@@ -1,5 +1,0 @@
-docker build -t myfirstimage .
-
-docker run -p 3000:3000 myfirstimage
-
-docker run -p 3000:3000 --name myfirstapp myfirstimage
