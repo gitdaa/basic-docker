@@ -1,0 +1,38 @@
+services:
+  prometheus:
+    build:
+      context: .
+      dockerfile: Dockerfile.prometheus
+    container_name: prometheus
+    volumes:
+      - prometheus_data:/promtheus
+    expose:
+      - "9090"
+    restart: always
+
+  node_exporter:
+    image: prom/node-exporter:latest
+    container_name: node_exporter
+    expose:
+      - "9100"
+    restart: always
+
+  grafana:
+    image: grafana/grafana
+    restart: always
+    expose:
+      - "3000:3000"
+    external_links:
+      - prometheus
+    environment:
+      GF_INSTALL_PLUGINS: grafana-clock-panel, grafana-simple-json-datasource
+      GF_SERVER_SERVE_FROM_SUB_PATH: true
+      GF_SERVER_ROOT_URL: /grafana
+
+volumes:
+  prometheus_data:
+
+networks:
+  default:
+    name: kong-net
+    external: true
